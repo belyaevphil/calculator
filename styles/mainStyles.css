@@ -1,7 +1,8 @@
 @import './resetStyles.css';
 
 html,
-body {
+body,
+button {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 24px;
     color: #303030;
@@ -27,11 +28,10 @@ main {
 
 .calculator-output-screen {
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    flex-direction: column;
     background-color: #ffffff;
     width: 350px;
-    height: 64px;
+    height: 80px;
     border-radius: 5px;
 }
 
@@ -43,6 +43,11 @@ main {
     width: 350px;
     height: 240px;
     margin-top: 20px;
+}
+
+.calculator-main-outer-list::selection,
+.calculator-main-outer-list::-moz-selection {
+    background: transparent;
 }
 
 .calculator-main-outer-list-row {
@@ -61,12 +66,24 @@ main {
 }
 
 .previous-operand {
-    color: #a6a6a6;
-    font-size: 12px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: #757575;
+    font-size: 18px;
+    width: 100%;
+    height: 50%;
+    padding-right: 15px;
 }
 
 .current-operand {
-    margin-top: 5px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 36px;
+    width: 100%;
+    height: 50%;
+    padding-right: 15px;
 }
 
 .calculator-button {
@@ -92,7 +109,8 @@ main {
     background-color: #b8a7ff;
 }
 
-.operator {
+.operator,
+.equals,
+.change-sign {
     background-color: #ff9500;
-    color: #ffffff;
 }
