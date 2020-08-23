@@ -1,8 +1,3 @@
-Number.prototype.countDecimals = function () {
-    if (Math.floor(this.valueOf()) === this.valueOf()) return 0;
-    return this.toString().split(".")[1].length || 0;
-}
-
 class Calculator {
     constructor(previousOperandTextElement, currentOperandTextElement) {
         this.previousOperandTextElement = previousOperandTextElement
@@ -18,12 +13,13 @@ class Calculator {
         this.updateDisplay()
     }
 
-    isOneDigitNumber() {
-        return this.currentOperand.length === 1
-    }
-
     isNegativeNumber() {
         return this.currentOperand[0] === '-'
+    }
+
+    isOneDigitNumber() {
+        return this.currentOperand.length === 1 ||
+            this.currentOperand.length === 2 && this.isNegativeNumber()
     }
 
     isError() {
@@ -31,7 +27,7 @@ class Calculator {
     }
 
     makeNumberNegative() {
-        this.currentOperand = (~parseFloat(this.currentOperand) + 1).toString()
+        this.currentOperand = `-${parseFloat(this.currentOperand)}`
     }
 
     makeNumberPositive() {
@@ -39,7 +35,10 @@ class Calculator {
     }
 
     changeSign() {
+        if (this.isError()) return this.clear()
+
         const signOfNumber = Math.sign(parseFloat(this.currentOperand))
+
         if (signOfNumber === 0) return
         else if (signOfNumber === 1) this.makeNumberNegative()
         else this.makeNumberPositive()
@@ -49,10 +48,11 @@ class Calculator {
 
     truncateNumber() {
         if ((this.isOneDigitNumber() && !this.previousOperand) ||
+            ((this.isOneDigitNumber() && this.isNegativeNumber() || this.isOneDigitNumber()) &&
+                this.operation === '=') ||
             (this.isOneDigitNumber() && this.isNegativeNumber()) ||
             this.isError()) {
-            this.currentOperand = '0'
-            return this.updateDisplay()
+            return this.clear()
         }
 
         this.currentOperand = this.currentOperand.slice(0, -1)
@@ -72,13 +72,21 @@ class Calculator {
         return this.currentOperand === ''
     }
 
+    doesFitInScreen() {
+        return this.currentOperand.length > 12
+    }
+
     appendNumber(number) {
+        if (this.isError()) return this.clear()
+
         if (this.isFloatingPoint(number) && this.currentOperand.includes('.') ||
-            this.currentOperand.length > 13) return
+            this.doesFitInScreen()) return
+
         if (this.isFloatingPoint(number) && (this.isNull() || this.isEmpty())) {
             this.currentOperand = '0.'
             return this.updateDisplay()
         }
+
         if (this.isNull()) this.currentOperand = ''
 
         this.currentOperand += number.toString()
@@ -87,6 +95,8 @@ class Calculator {
     }
 
     chooseOperation(operation) {
+        if (this.isError()) return this.clear()
+
         if (!this.currentOperand) {
             this.operation = operation
             return this.updateDisplay()
@@ -101,54 +111,67 @@ class Calculator {
     }
 
     compute() {
+        if (this.isError() || this.previousOperand === '') return this.clear()
+
+        if (isNaN(this.previousOperand)) {
+            const repeatSign = this.previousOperand.split(' ')[1]
+            const repeatCurrent = this.previousOperand.split(' ')[2]
+            const curr = this.currentOperand
+
+            this.operation = repeatSign
+            this.currentOperand = repeatCurrent
+            this.previousOperand = curr
+
+            return this.compute()
+        }
+
         let computation
         const prev = parseFloat(this.previousOperand)
         const current = parseFloat(this.currentOperand)
-
-        if (isNaN(prev) || isNaN(current)) return
+        const calculationLimit = 10 ** 16
 
         switch (this.operation) {
             case '+':
-                if (this.previousOperand.length > this.currentOperand.length) {
-                    computation = (prev * 10 ** prev.countDecimals() + current * 10 ** prev.countDecimals()) / 10 ** prev.countDecimals()
-                } else {
-                    computation = (prev * 10 ** current.countDecimals() + current * 10 ** current.countDecimals()) / 10 ** current.countDecimals()
-                }
+                computation = (prev * calculationLimit + current * calculationLimit) / calculationLimit
                 break
             case '-':
-                if (this.previousOperand.length > this.currentOperand.length) {
-                    computation = (prev * 10 ** prev.countDecimals() - current * 10 ** prev.countDecimals()) / 10 ** prev.countDecimals()
-                } else {
-                    computation = (prev * 10 ** current.countDecimals() - current * 10 ** current.countDecimals()) / 10 ** current.countDecimals()
-                }
+                computation = (prev * calculationLimit - current * calculationLimit) / calculationLimit
                 break
             case '*':
                 computation = prev * current
                 break
             case '/':
-                if (prev === 0) computation = 'Error'
+                if (!prev || !current) {
+                    this.previousOperand = ''
+                    this.operation = undefined
+                    this.currentOperand = 'Error'
+
+                    return this.updateDisplay()
+                }
                 else computation = prev / current
                 break
             default:
                 return
         }
 
-        this.previousOperand = ''
-        this.operation = undefined
-        this.currentOperand = (Math.round((computation + Number.EPSILON) * 10 ** 13) / 10 ** 13).toString()
+        const roundedResult = Math.round((computation + Number.EPSILON) * calculationLimit) / calculationLimit
+
+        this.previousOperand = `${this.previousOperand} ${this.operation} ${this.currentOperand}`
+        this.operation = '='
+        this.currentOperand = roundedResult.toString().substr(0, 16)
 
         this.updateDisplay()
     }
 
     getDisplayString(string) {
-        if (string === 'Error') return string
+        if (isNaN(string)) return string
 
         const integerDigits = parseFloat(string.split('.')[0])
         const decimalDigits = string.split('.')[1]
         let integerDisplay
 
         if (isNaN(integerDigits)) integerDisplay = ''
-        else integerDisplay = integerDigits.toLocaleString('en', { maximumFractionDigits: 0 })
+        else integerDisplay = integerDigits.toString()
 
         if (decimalDigits != null) return `${integerDisplay}.${decimalDigits}`
         else return integerDisplay
