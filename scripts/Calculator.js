@@ -39,6 +39,8 @@ class Calculator {
 
         const signOfNumber = Math.sign(parseFloat(this.currentOperand))
 
+        if (isNaN(signOfNumber)) return
+
         if (signOfNumber === 0) return
         else if (signOfNumber === 1) this.makeNumberNegative()
         else this.makeNumberPositive()
@@ -128,7 +130,7 @@ class Calculator {
         let computation
         const prev = parseFloat(this.previousOperand)
         const current = parseFloat(this.currentOperand)
-        const calculationLimit = 10 ** 16
+        const calculationLimit = 10 ** 13
 
         switch (this.operation) {
             case '+':
