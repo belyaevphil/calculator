@@ -75,7 +75,7 @@ class Calculator {
     }
 
     doesFitInScreen() {
-        return this.currentOperand.length > 12
+        return this.currentOperand.length > 10
     }
 
     appendNumber(number) {
@@ -99,20 +99,40 @@ class Calculator {
     chooseOperation(operation) {
         if (this.isError()) return this.clear()
 
+        let thisOperation
+        switch (operation) {
+            case 'plus':
+                thisOperation = '+'
+                break
+            case 'minus':
+                thisOperation = '-'
+                break
+            case 'multiplication':
+                thisOperation = 'x'
+                break
+            case 'division':
+                thisOperation = '÷'
+                break
+            default:
+                return
+        }
+
         if (!this.currentOperand) {
-            this.operation = operation
+            this.operation = thisOperation
             return this.updateDisplay()
         }
+
         if (this.previousOperand) this.compute()
 
         this.previousOperand = this.currentOperand
-        this.operation = operation
+        this.operation = thisOperation
         this.currentOperand = ''
 
         this.updateDisplay()
     }
 
     compute() {
+        if (this.isEmpty()) return
         if (this.isError() || this.previousOperand === '') return this.clear()
 
         if (isNaN(this.previousOperand)) {
@@ -130,7 +150,7 @@ class Calculator {
         let computation
         const prev = parseFloat(this.previousOperand)
         const current = parseFloat(this.currentOperand)
-        const calculationLimit = 10 ** 13
+        const calculationLimit = 10 ** 10
 
         switch (this.operation) {
             case '+':
@@ -139,10 +159,10 @@ class Calculator {
             case '-':
                 computation = (prev * calculationLimit - current * calculationLimit) / calculationLimit
                 break
-            case '*':
+            case 'x':
                 computation = prev * current
                 break
-            case '/':
+            case '÷':
                 if (!prev || !current) {
                     this.previousOperand = ''
                     this.operation = undefined
@@ -160,7 +180,7 @@ class Calculator {
 
         this.previousOperand = `${this.previousOperand} ${this.operation} ${this.currentOperand}`
         this.operation = '='
-        this.currentOperand = roundedResult.toString().substr(0, 16)
+        this.currentOperand = roundedResult.toString().substr(0, 10)
 
         this.updateDisplay()
     }
