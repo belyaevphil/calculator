@@ -1,3 +1,4 @@
+@import './normalize.css';
 @import './resetStyles.css';
 @import './containerStyles.css';
 @import './outputScreenStyles.css';
