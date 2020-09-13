@@ -1,4 +1,5 @@
 import { Calculator } from './Calculator';
+import { watchForHover } from './helpers';
 
 import '@/assets/scss';
 
@@ -29,6 +30,8 @@ const calculator = new Calculator(
   previousOperandTextElement,
   currentOperandTextElement
 );
+
+watchForHover();
 
 numberButtons.forEach(button =>
   button.addEventListener('click', () =>

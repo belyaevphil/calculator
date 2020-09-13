@@ -1,6 +1,5 @@
 @import './normalize';
 @import './reset';
-@import './fonts';
 @import './vars';
 
 body,
@@ -88,17 +87,22 @@ body {
   background-color: inherit;
   height: 50px;
   width: 50px;
-  &:hover {
-    color: #f00d94;
-  }
-  &:hover .svg {
-    fill: #f00d94;
-  }
-  &:active {
-    color: #fd5432;
-  }
-  &:active .svg {
-    fill: #fd5432;
+}
+
+.has-hover {
+  .button {
+    &:hover {
+      color: #f00d94;
+    }
+    &:hover .svg {
+      fill: #f00d94;
+    }
+    &:active {
+      color: #fd5432;
+    }
+    &:active .svg {
+      fill: #fd5432;
+    }
   }
 }
 
@@ -116,14 +120,19 @@ body {
   background: linear-gradient(90deg, #fd5432 0%, #f00d94 100%);
   border-radius: 25px;
   box-shadow: 0px 0px 50px 1px rgba(253, 84, 50, 0.2);
-  &:hover {
-    border-style: solid;
-    border-width: 2px;
-    border-color: #f00d94;
-    background: #171717;
-    box-shadow: unset;
-  }
-  &:active {
-    border-color: #fd5432;
+}
+
+.has-hover {
+  .equality {
+    &:hover {
+      border-style: solid;
+      border-width: 2px;
+      border-color: #f00d94;
+      background: #171717;
+      box-shadow: unset;
+    }
+    &:active {
+      border-color: #fd5432;
+    }
   }
 }
