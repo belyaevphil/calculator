@@ -1,0 +1,129 @@
+@import './normalize';
+@import './reset';
+@import './fonts';
+@import './vars';
+
+body,
+button {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 2.4rem;
+  color: #ffffff;
+}
+
+body {
+  background: linear-gradient(90deg, #f00d95 0%, #fd5532 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calculator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #171717;
+  width: 350px;
+  height: 570px;
+  box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.2);
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  height: 147px;
+  border-bottom: 1px solid #303030;
+  padding: 0 20px;
+  &__previous-operand {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    color: #757575;
+    font-size: 1.8rem;
+    width: 100%;
+    height: 50%;
+  }
+  &__current-operand {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 4.8rem;
+    width: 100%;
+    height: 50%;
+  }
+}
+
+.panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 350px;
+  height: 423px;
+}
+
+.grid {
+  display: grid;
+  justify-content: center;
+  place-items: center;
+  height: 322px;
+  width: 250px;
+  grid-template: repeat(5, 1fr) / repeat(4, 1fr);
+  &::selection,
+  &::-moz-selection {
+    background: transparent;
+  }
+  &__cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: inherit;
+  height: 50px;
+  width: 50px;
+  &:hover {
+    color: #f00d94;
+  }
+  &:hover .svg {
+    fill: #f00d94;
+  }
+  &:active {
+    color: #fd5432;
+  }
+  &:active .svg {
+    fill: #fd5432;
+  }
+}
+
+.svg {
+  pointer-events: none;
+}
+
+.double-span {
+  grid-column: span 2;
+}
+
+.equality {
+  width: 120px;
+  height: 50px;
+  background: linear-gradient(90deg, #fd5432 0%, #f00d94 100%);
+  border-radius: 25px;
+  box-shadow: 0px 0px 50px 1px rgba(253, 84, 50, 0.2);
+  &:hover {
+    border-style: solid;
+    border-width: 2px;
+    border-color: #f00d94;
+    background: #171717;
+    box-shadow: unset;
+  }
+  &:active {
+    border-color: #fd5432;
+  }
+}
